@@ -11,6 +11,7 @@ import re
 import os
 import sqlite3 as lite
 from threading import Thread, Event
+import glob
 
 
 def parse_args():
@@ -20,7 +21,6 @@ def parse_args():
     parser.add_argument('-fN','--full-name',help='Look up a username based on full name(ex. -fN "Firstname Lastname")')
     parser.add_argument('-c','--cleanup',help='Clean up residual files that were created', action='store_true')
     parser.add_argument('-p','--printDB',help='Prints the database',action='store_true')
-    ##Error check if the computer is on a domain
     ##brute force?
     ##Take the len of the userList and find the position of the current user the programs if working on and calculate percentatge
     ##Speed up by threading
@@ -39,12 +39,12 @@ def connectDB(db):
 def getDomain():
     domainName = cmd("wmic computersystem get domain")
     domainName = domainName.strip().split()[1]
-    return str(domainName)
+    return domainName.decode('utf-8')
 
 def getCompName():
     compName = cmd("wmic computersystem get name")
     compName = compName.strip().split()[1]
-    return str(compName)
+    return compName.decode('utf-8')
 
 def get_allUsers(domain):
     if domain:
@@ -160,38 +160,40 @@ def printDB():
 
     con.close()
 
-def main(args):
-    if not os.path.exists('userInfo.txt'):
+def getGroup(user):
+    print("Getting group for {}".format(user))
+    ##cmd("net user /domain {} | findstr 'Group'")
 
+def firstRun(domain):
         print("[+]First Time running, please wait while the database is being created....")
         print("[*]This could take a long time...")
 
         if args.domain:
             domainName = getDomain()
-
             connectDB(domainName+"Users.db")
         else:
             compName = getCompName()
 
             connectDB(compName+"Users.db")
 
-        #cur = con.cursor()
         cur.execute('CREATE TABLE main (username TEXT, fullname TEXT)')
         create_userInfo(args.domain)
         print("[+]Database has been created")
         print("[+]Please run 'userEnum.py -h' for options")
         sys.exit()
 
+def main(args):
+    domainName = getDomain()
+    compName = getCompName()
 
+    if not os.path.exists('UserInfo.txt'):
+        firstRun(args.domain)
+
+    if
 
     if args.domain:
-        domainName = getDomain()
-
         connectDB(domainName+"Users.db")
     else:
-        compName = getCompName()
-
-        ##Creates another databse, need to error check it
         connectDB(compName+"Users.db")
 
 
