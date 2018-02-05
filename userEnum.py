@@ -189,13 +189,10 @@ def main(args):
     if not os.path.exists('UserInfo.txt'):
         firstRun(args.domain)
 
-    if
-
     if args.domain:
         connectDB(domainName+"Users.db")
     else:
         connectDB(compName+"Users.db")
-
 
     if args.username:
         get_fullName(args.username)
@@ -207,8 +204,6 @@ def main(args):
         printDB()
 
     con.close()
-
-
 
 if __name__=='__main__':
     args = parse_args()
