@@ -17,11 +17,12 @@ import glob
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-d','--domain',help='Gathers domain users',action='store_true',default=False)
+    parser.add_argument('-s','--search',help='Used to search for a user',action='store_true', default=False)
     parser.add_argument('-u','--username',help='Look up full name based on username')
+    parser.add_argument('-g','--group',help='View the groups a user is in', action='store_true')
     parser.add_argument('-fN','--full-name',help='Look up a username based on full name(ex. -fN "Firstname Lastname")')
     parser.add_argument('-c','--cleanup',help='Clean up residual files that were created', action='store_true')
     parser.add_argument('-p','--printDB',help='Prints the database',action='store_true')
-    ##brute force?
     ##Take the len of the userList and find the position of the current user the programs if working on and calculate percentatge
     ##Speed up by threading
     return parser.parse_args()
@@ -151,7 +152,7 @@ def cleanup():
     os.remove('userInfo.txt')
     sys.exit()
 
-def printDB():
+def print_DB():
     cur.execute('SELECT * from main')
     rows = cur.fetchall()
 
@@ -160,9 +161,10 @@ def printDB():
 
     con.close()
 
-def getGroup(user):
+def get_Group(user):
     print("Getting group for {}".format(user))
-    ##cmd("net user /domain {} | findstr 'Group'")
+    group = cmd("net user /domain {} | findstr 'Group'")
+    print(group)
 
 def firstRun(domain):
         print("[+]First Time running, please wait while the database is being created....")
@@ -202,6 +204,8 @@ def main(args):
         cleanup()
     if args.printDB:
         printDB()
+    if args.username and args.group:
+        get_Group(args.username)
 
     con.close()
 
