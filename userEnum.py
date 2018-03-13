@@ -1,6 +1,10 @@
 '''
-Have a main script that takes arguemnts
-have several subscripts that run (userEnum, sharEnum, compEnum, etc...)
+Add verbose option
+Everyone with {x} firstname or {x} lastname (column for first name and another for last name??)
+return everyone with the same name
+error check the input (have everything lowercase, or everything uppercase)
+create a folder for the databases
+if more than one database exsist then output menu to ask the user which one to connect to
 '''
 
 from subprocess import Popen, PIPE, check_output, CalledProcessError
@@ -17,11 +21,9 @@ import glob
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-d','--domain',help='Gathers domain users',action='store_true',default=False)
-    parser.add_argument('-s','--search',help='Used to search for a user',action='store_true', default=False)
     parser.add_argument('-u','--username',help='Look up full name based on username')
     parser.add_argument('-g','--group',help='View the groups a user is in', action='store_true')
     parser.add_argument('-fN','--full-name',help='Look up a username based on full name(ex. -fN "Firstname Lastname")')
-    parser.add_argument('-c','--cleanup',help='Clean up residual files that were created', action='store_true')
     parser.add_argument('-p','--printDB',help='Prints the database',action='store_true')
     ##Take the len of the userList and find the position of the current user the programs if working on and calculate percentatge
     ##Speed up by threading
@@ -192,7 +194,8 @@ def main(args):
         firstRun(args.domain)
 
     if args.domain:
-        connectDB(domainName+"Users.db")
+        #connectDB(domainName+"Users.db")
+        connectDB("admin.rose.cc.ok.usUsers.db")
     else:
         connectDB(compName+"Users.db")
 
@@ -203,7 +206,7 @@ def main(args):
     if args.cleanup:
         cleanup()
     if args.printDB:
-        printDB()
+        print_DB()
     if args.username and args.group:
         get_Group(args.username)
 
